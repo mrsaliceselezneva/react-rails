@@ -1,2 +1,0 @@
-CREATE USER ironart;
-ALTER USER ironart WITH SUPERUSER;

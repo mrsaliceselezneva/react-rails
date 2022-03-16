@@ -1,47 +1,20 @@
-FROM ruby:2.7.5-alpine
+# pull official base image
+FROM node:13.12.0-alpine
 
-ENV BUNDLER_VERSION=2.3.7
-
-RUN apk add --update --no-cache \
-    binutils-gold \
-    build-base \
-    curl \
-    file \
-    g++ \
-    gcc \
-    git \
-    less \
-    libstdc++ \
-    libffi-dev \
-    libc-dev \
-    linux-headers \
-    libxml2-dev \
-    libxslt-dev \
-    libgcrypt-dev \
-    make \
-    netcat-openbsd \
-    nodejs \
-    openssl \
-    pkgconfig \
-    postgresql-dev \
-    python \
-    tzdata \
-    yarn
-
-RUN gem install bundler -v 2.3.7
-
+# set working directory
 WORKDIR /app
 
-COPY Gemfile Gemfile.lock ./
+# add `/app/node_modules/.bin` to $PATH
+ENV PATH /app/node_modules/.bin:$PATH
 
-RUN bundle config build.nokogiri --use-system-libraries
+# install app dependencies
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm install --silent
+RUN npm install react-scripts@3.4.1 -g --silent
 
-RUN bundle check || bundle install
-
-COPY package.json yarn.lock ./
-
-RUN yarn install --check-files
-
+# add app
 COPY . ./
 
-ENTRYPOINT ["./entrypoints/docker-entrypoint.sh"]
+# start app
+CMD ["npm", "start"]
