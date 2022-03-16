@@ -1,0 +1,6 @@
+<h1>Editing Card</h1>
+
+<%= render 'form', card: @card %>
+
+<%= link_to 'Show', table_list_cards_path(@list.table, @list, @card) %> |
+<%= link_to 'Back', table_list_cards_path(@list.table, @list) %>
